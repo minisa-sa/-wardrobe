@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fdf4f0">
+<title>🌸 我的衣櫥 OOTD</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css">
+<style>
+:root{
+  /* 莫奈花園 × 春日馬卡龍 — 加深暈染版 */
+  --bg:#fef8f5;--bg2:#fceee8;--bg3:#f8e0d8;
+  --text:#3d2830;--text2:#9a6878;--text3:#d4a8b8;
+  --border:rgba(210,140,160,0.22);--border2:rgba(200,120,148,0.32);
+  /* 主色：深薰衣草 */
+  --purple:#c070a8;--purple-light:#f8e0f0;--purple-dark:#904070;
+  /* 粉：深玫瑰馬卡龍 */
+  --pink:#d86888;--pink-light:#fde0ea;
+  /* 綠：薄荷嫩葉 */
+  --teal:#78b898;--teal-light:#e8f6ee;
+  /* 藍：莫奈睡蓮 */
+  --blue:#88a8c8;--blue-light:#eaf2fa;
+  /* 強調：杏桃橘 */
+  --accent:#e89068;--accent-light:#fdeee8;
+  --danger:#c07078;--danger-light:#fde8ea;
+  --radius:16px;--radius-sm:10px;--radius-pill:999px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#2a2030;--bg2:#332438;--bg3:#3a2a40;
+    --text:#f5eef8;--text2:#c0a8c8;--text3:#806880;
+    --border:rgba(200,150,220,0.15);--border2:rgba(200,150,220,0.25);
+    --purple-light:#3a2850;--purple-dark:#d0a8e8;
+    --pink-light:#3a1830;--teal-light:#0e2820;--blue-light:#0e1e30;
+    --accent-light:#302018;--danger-light:#2a1010;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;background-image:radial-gradient(ellipse at 10% 10%,rgba(230,140,170,0.28) 0%,transparent 55%),radial-gradient(ellipse at 90% 30%,rgba(192,112,168,0.18) 0%,transparent 45%),radial-gradient(ellipse at 60% 80%,rgba(160,180,220,0.2) 0%,transparent 50%),radial-gradient(ellipse at 20% 90%,rgba(240,180,200,0.22) 0%,transparent 40%)}
+.app{padding-bottom:80px;min-height:100vh}
+.topbar{padding:52px 16px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(255,248,245,0.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:40;border-bottom:1px solid var(--border)}
+.topbar-title{font-size:19px;font-weight:600;letter-spacing:-0.3px}
+.fab{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#d86888,#c070a8);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:0 4px 16px rgba(200,100,140,0.45)}
+.nav{display:flex;border-top:1px solid var(--border);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,248,245,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:50;padding:8px 0 max(env(safe-area-inset-bottom),8px)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;color:var(--text3);font-size:10px;border:none;background:none;transition:color .2s;font-family:inherit}
+.nav-item.active{color:var(--purple)}
+.nav-item i{font-size:22px}
+.section{display:none;padding:0 16px}.section.active{display:block}
+
+.card{background:rgba(255,248,245,0.85);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:var(--radius-pill);font-weight:500}
+.bp{background:var(--pink-light);color:var(--pink)}
+.bt{background:var(--teal-light);color:var(--teal)}
+.bb{background:var(--blue-light);color:var(--blue)}
+.bg2{background:var(--bg2);color:var(--text2)}
+.bpu{background:var(--purple-light);color:var(--purple-dark)}
+
+.cloth-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px;margin-top:4px}
+.cloth-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;cursor:pointer;transition:border-color .15s,transform .1s;text-align:center;position:relative}
+.cloth-card:active{transform:scale(0.97)}
+.cloth-photo{width:100%;aspect-ratio:1;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:8px;overflow:hidden;position:relative}
+.cloth-photo img{width:100%;height:100%;object-fit:cover}
+.worn-badge{position:absolute;top:6px;right:6px;background:var(--pink-light);color:var(--pink);font-size:10px;padding:2px 7px;border-radius:var(--radius-pill)}
+.cloth-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cloth-sub{font-size:11px;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:3px}
+.swatch-dot{width:10px;height:10px;border-radius:50%;border:0.5px solid rgba(0,0,0,.12);flex-shrink:0;display:inline-block}
+
+.filter-scroll{display:flex;gap:7px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+.filter-scroll::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;font-size:12px;padding:6px 14px;border:0.5px solid var(--border2);border-radius:var(--radius-pill);cursor:pointer;background:var(--bg);color:var(--text2);transition:all .15s;font-family:inherit}
+.chip.active{background:linear-gradient(135deg,#d86888,#c070a8);color:#fff;border-color:transparent}
+
+.swatch{width:32px;height:32px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:transform .15s;flex-shrink:0;position:relative}
+.swatch.active{outline:3px solid var(--text);outline-offset:2px}
+.swatch-sm{width:12px;height:12px;border-radius:4px;display:inline-block;vertical-align:middle;margin-right:3px;border:0.5px solid rgba(0,0,0,.1)}
+
+.ootd-slot{background:var(--bg2);border-radius:12px;padding:12px 8px;text-align:center;flex:1;min-width:0}
+
+.stat2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+.stat-box{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;text-align:center;border:1px solid var(--border)}
+.stat-n{font-size:26px;font-weight:600;color:var(--text)}
+.stat-l{font-size:11px;color:var(--text2);margin-top:2px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.bar-label{font-size:12px;color:var(--text2);width:48px;flex-shrink:0}
+.bar-track{flex:1;height:12px;background:var(--bg2);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#d86888,#c070a8)}
+.bar-count{font-size:12px;font-weight:500;width:18px;text-align:right}
+
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end}
+.modal-wrap.show{display:flex}
+.modal{background:rgba(255,248,245,0.97);border-radius:22px 22px 0 0;padding:20px 16px max(env(safe-area-inset-bottom,24px),24px);width:100%;max-height:92vh;overflow-y:auto;border-top:1px solid var(--border)}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:16px}
+.field{margin-bottom:14px}
+.field-label{font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select,textarea{font-size:14px;width:100%;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--purple)}
+textarea{height:64px;resize:none}
+.btn-main{width:100%;padding:14px;background:linear-gradient(135deg,#d87898,#c070a8,#88a8c8);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.3px;box-shadow:0 4px 16px rgba(200,100,140,0.3)}
+.btn-sub{width:100%;padding:12px;background:var(--bg2);color:var(--text);border:none;border-radius:var(--radius-sm);font-size:14px;cursor:pointer;margin-top:8px;font-family:inherit}
+.btn-ig{width:100%;padding:14px;background:#E1306C;color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px}
+.btn-danger{width:100%;padding:12px;background:var(--danger-light);color:var(--danger);border:none;border-radius:var(--radius-sm);font-size:14px;cursor:pointer;margin-top:8px;font-family:inherit}
+.photo-upload{width:100%;aspect-ratio:1.5;border:1.5px dashed var(--border2);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:8px;background:var(--bg2);color:var(--text2);font-size:13px;overflow:hidden;position:relative}
+.photo-upload img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ig-caption{font-size:14px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-all}
+.ig-tags{font-size:13px;color:#378ADD;margin-top:10px;line-height:1.9;word-break:break-all}
+.log-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:0.5px solid var(--border)}
+.log-row:last-child{border-bottom:none}
+.empty{text-align:center;color:var(--text3);font-size:14px;padding:2.5rem 0}
+
+.palette-group-title{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.palette-section-title{font-size:15px;font-weight:700;color:var(--purple);margin:16px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--purple-light)}
+.color-grid{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.color-tile{cursor:pointer;text-align:center;width:44px}
+.color-tile-box{width:44px;height:44px;border-radius:11px;border:0.5px solid rgba(0,0,0,.1);transition:transform .15s}
+.color-tile:active .color-tile-box{transform:scale(0.9)}
+.color-tile-name{font-size:9px;color:var(--text2);margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:44px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <span class="topbar-title" id="page-title">我的衣櫥</span>
+    <button class="fab" onclick="openAdd()" id="fab-add" aria-label="新增衣物"><i class="ti ti-plus"></i></button>
+  </div>
+
+  <div class="section active" id="sec-wardrobe">
+    <div class="filter-scroll" id="cat-filter" style="margin-top:12px">
+      <button class="chip active" onclick="filterCat('all',this)">全部</button>
+      <button class="chip" onclick="filterCat('上衣',this)">上衣</button>
+      <button class="chip" onclick="filterCat('外套',this)">外套</button>
+      <button class="chip" onclick="filterCat('下著',this)">下著</button>
+      <button class="chip" onclick="filterCat('裙子',this)">裙子</button>
+      <button class="chip" onclick="filterCat('鞋子',this)">鞋子</button>
+      <button class="chip" onclick="filterCat('配件',this)">配件</button>
+    </div>
+    <div class="cloth-grid" id="cloth-grid">
+      <div style="grid-column:1/-1" class="empty">還沒有衣物，點右上角 + 新增！</div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-ootd">
+    <div class="card" style="margin-top:12px">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">今天的風格</div>
+      <div class="filter-scroll" id="style-filter">
+        <button class="chip active" onclick="setStyle('日常',this)">日常</button>
+        <button class="chip" onclick="setStyle('正式',this)">正式</button>
+        <button class="chip" onclick="setStyle('休閒',this)">休閒</button>
+        <button class="chip" onclick="setStyle('約會',this)">約會</button>
+        <button class="chip" onclick="setStyle('運動',this)">運動</button>
+      </div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">今天天氣</div>
+      <div class="filter-scroll" id="weather-filter">
+        <button class="chip active" onclick="setWeather('晴天',this)">☀️ 晴天</button>
+        <button class="chip" onclick="setWeather('陰天',this)">☁️ 陰天</button>
+        <button class="chip" onclick="setWeather('下雨',this)">🌧️ 下雨</button>
+        <button class="chip" onclick="setWeather('涼爽',this)">🍃 涼爽</button>
+        <button class="chip" onclick="setWeather('炎熱',this)">🔥 炎熱</button>
+      </div>
+      <button class="btn-main" onclick="genOOTD()" style="margin-top:4px"><i class="ti ti-sparkles"></i> 產生今日穿搭</button>
+    </div>
+    <div id="ootd-result" style="display:none">
+      <div class="card">
+        <div style="font-size:14px;font-weight:600;margin-bottom:10px">建議穿搭組合</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="ootd-slots"></div>
+        <div style="margin-top:12px;padding:11px;background:var(--purple-light);border-radius:var(--radius-sm);border:1px solid rgba(176,136,192,0.2)">
+          <div style="font-size:12px;color:var(--purple-dark)" id="ootd-tip"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:14px;font-weight:600;margin-bottom:10px">顏色搭配分析</div>
+        <div id="color-analysis"></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:600">IG 發文文案</div>
+          <button onclick="copyCaption()" style="font-size:11px;padding:5px 11px;border-radius:var(--radius-pill);cursor:pointer;border:0.5px solid var(--border2);background:var(--bg);color:var(--text2);font-family:inherit"><i class="ti ti-copy"></i> 複製</button>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:12px">
+          <div class="ig-caption" id="ig-caption"></div>
+          <div class="ig-tags" id="ig-tags"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+          <button class="btn-ig" onclick="openIG()" style="margin-top:0;font-size:13px;padding:12px 6px"><i class="ti ti-brand-instagram"></i> 發文</button>
+          <button class="btn-ig" onclick="openIGStory()" style="margin-top:0;font-size:13px;padding:12px 6px;background:#C13584"><i class="ti ti-player-play"></i> 限時動態</button>
+        </div>
+        <button class="btn-sub" onclick="saveOOTD()"><i class="ti ti-device-floppy"></i> 儲存今日穿搭記錄</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-palette">
+    <div style="margin-top:12px" id="palette-main"></div>
+    <div class="card" id="pair-result" style="display:none">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px">搭配建議</div>
+      <div id="pair-content"></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-stats">
+    <div class="stat2" style="margin-top:12px">
+      <div class="stat-box"><div class="stat-n" id="st-total">0</div><div class="stat-l">衣物總件數</div></div>
+      <div class="stat-box"><div class="stat-n" id="st-logs">0</div><div class="stat-l">穿搭記錄</div></div>
+      <div class="stat-box"><div class="stat-n" id="st-unworn">0</div><div class="stat-l">未曾穿過</div></div>
+      <div class="stat-box"><div class="stat-n" id="st-fav">—</div><div class="stat-l">最愛單品</div></div>
+    </div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px">類別分佈</div>
+      <div id="cat-bars"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px">穿搭記錄</div>
+      <div id="log-list"><div class="empty">還沒有記錄</div></div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-item active" onclick="switchTab('wardrobe',this)"><i class="ti ti-hanger"></i><span>衣櫥</span></button>
+    <button class="nav-item" onclick="switchTab('ootd',this)"><i class="ti ti-sparkles"></i><span>穿搭</span></button>
+    <button class="nav-item" onclick="switchTab('palette',this)"><i class="ti ti-palette"></i><span>色票</span></button>
+    <button class="nav-item" onclick="switchTab('stats',this)"><i class="ti ti-chart-bar"></i><span>記錄</span></button>
+  </nav>
+</div>
+
+<!-- 新增衣物 -->
+<div class="modal-wrap" id="modal-add">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">新增衣物</div>
+    <div class="field">
+      <div class="field-label">衣物照片</div>
+      <div class="photo-upload" id="photo-preview">
+        <i class="ti ti-camera" style="font-size:30px"></i>
+        <span>點擊上傳或拍照</span>
+        <input type="file" accept="image/*" capture="environment" onchange="previewPhoto(event)">
+      </div>
+    </div>
+    <div class="field"><div class="field-label">衣物名稱</div><input id="f-name" placeholder="例：白色棉質T恤"></div>
+    <div class="mrow field">
+      <div><div class="field-label">類別</div>
+        <select id="f-cat"><option value="">選擇</option><option>上衣</option><option>外套</option><option>下著</option><option>裙子</option><option>鞋子</option><option>配件</option></select>
+      </div>
+      <div><div class="field-label">風格</div>
+        <select id="f-style"><option value="">選擇</option><option>日常</option><option>正式</option><option>休閒</option><option>約會</option><option>運動</option></select>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">顏色（從你的色票選）</div>
+      <div id="add-palette-wrap" style="max-height:260px;overflow-y:auto"></div>
+      <div id="selected-color-name" style="font-size:12px;color:var(--purple);margin-top:6px;font-weight:500"></div>
+    </div>
+    <div class="mrow field">
+      <div><div class="field-label">季節</div>
+        <select id="f-season"><option value="">選擇</option><option>春</option><option>夏</option><option>秋</option><option>冬</option><option>四季</option></select>
+      </div>
+      <div><div class="field-label">品牌（選填）</div><input id="f-brand" placeholder="品牌名稱"></div>
+    </div>
+    <div class="field"><div class="field-label">備註（選填）</div><textarea id="f-note" placeholder="購入地點、特殊說明..."></textarea></div>
+    <button class="btn-main" onclick="addCloth()">儲存衣物</button>
+    <button class="btn-sub" onclick="closeModal('modal-add')">取消</button>
+  </div>
+</div>
+
+<!-- 衣物詳細 -->
+<div class="modal-wrap" id="modal-detail">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="detail-body"></div>
+    <button class="btn-main" onclick="wearToday()"><i class="ti ti-check"></i> 今天穿了！</button>
+    <button class="btn-sub" onclick="goOOTD()"><i class="ti ti-sparkles"></i> 用這件產生穿搭</button>
+    <button class="btn-danger" onclick="deleteCloth()"><i class="ti ti-trash"></i> 刪除這件衣物</button>
+    <button class="btn-sub" onclick="closeModal('modal-detail')">關閉</button>
+  </div>
+</div>
+
+<script>
+const EMOJI={上衣:'👕',外套:'🧥',下著:'👖',裙子:'👗',鞋子:'👟',配件:'👜'};
+
+// ===== 你的完整色票 =====
+const PALETTE_DATA=[
+  {section:'舒服系',groups:[
+    {group:'海洋寧靜',colors:[{name:'天空藍',hex:'#87CEDC'},{name:'海洋藍',hex:'#4A7FB5'},{name:'深海藍',hex:'#1B3A6B'},{name:'薄荷綠',hex:'#6BBFA0'}]},
+    {group:'暖陽木質',colors:[{name:'奶油',hex:'#F5E6C8'},{name:'珊瑚粉',hex:'#F0A090'},{name:'磚紅',hex:'#C85A4A'},{name:'玫瑰棕',hex:'#A87070'}]},
+    {group:'森林呼吸',colors:[{name:'嫩綠',hex:'#B8E8C0'},{name:'薄荷',hex:'#78C8A8'},{name:'森林綠',hex:'#3D8C60'},{name:'深森綠',hex:'#1E4D35'}]}
+  ]},
+  {section:'對比系',groups:[
+    {group:'熱血紅綠',colors:[{name:'鮮紅',hex:'#E83030'},{name:'活力綠',hex:'#28A878'},{name:'米白',hex:'#F0EDE0'}]},
+    {group:'運動藍橘',colors:[{name:'深藍',hex:'#1A3A7A'},{name:'亮藍',hex:'#2878E0'},{name:'橘色',hex:'#F07820'},{name:'金橘',hex:'#E8B020'}]},
+    {group:'電競紫黃',colors:[{name:'深紫',hex:'#7020B0'},{name:'亮紫',hex:'#9840D0'},{name:'亮黃',hex:'#E8C000'},{name:'墨黑',hex:'#1A1A2E'}]}
+  ]},
+  {section:'國際品牌',groups:[
+    {group:'Tiffany',colors:[{name:'Tiffany藍',hex:'#0ABAB5'},{name:'純白',hex:'#FFFFFF'},{name:'墨黑',hex:'#1A1A1A'}]},
+    {group:'Hermès',colors:[{name:'愛馬仕橘',hex:'#E8721A'},{name:'深棕',hex:'#5A3010'},{name:'奶白',hex:'#F5EDD8'}]},
+    {group:'Chanel',colors:[{name:'正黑',hex:'#1A1A1A'},{name:'純白',hex:'#FFFFFF'},{name:'金駝',hex:'#C8A870'}]},
+    {group:'LV',colors:[{name:'金棕',hex:'#8B6914'},{name:'駝色',hex:'#C4963C'},{name:'深咖',hex:'#4A2810'}]},
+    {group:'Cartier',colors:[{name:'卡地亞紅',hex:'#C01830'},{name:'古金',hex:'#B89030'},{name:'正黑',hex:'#1A1A1A'}]}
+  ]},
+  {section:'青春系',groups:[
+    {group:'糖果派對',colors:[{name:'糖粉',hex:'#FF80A0'},{name:'橘糖',hex:'#FF9840'},{name:'檸檬黃',hex:'#E8D820'},{name:'萊姆綠',hex:'#50D050'},{name:'天空藍',hex:'#5090E0'}]},
+    {group:'霓虹電子',colors:[{name:'霓虹粉',hex:'#FF2060'},{name:'電紫',hex:'#8030D0'},{name:'電藍',hex:'#2060E8'},{name:'電黃',hex:'#E8C000'}]},
+    {group:'熱帶風情',colors:[{name:'熱帶綠',hex:'#00C878'},{name:'陽光黃',hex:'#F0C030'},{name:'火焰粉',hex:'#F04060'},{name:'海洋青',hex:'#0890C0'}]}
+  ]},
+  {section:'一亮系',groups:[
+    {group:'寶藍鵝黃',colors:[{name:'寶藍',hex:'#1A3088'},{name:'鵝黃',hex:'#F0D040'},{name:'奶白',hex:'#F5F0E0'}]},
+    {group:'翡翠珊瑚',colors:[{name:'翡翠綠',hex:'#00A878'},{name:'珊瑚紅',hex:'#F06050'},{name:'米白',hex:'#F5EDE0'}]},
+    {group:'紫羅蘭芥末',colors:[{name:'紫羅蘭',hex:'#6030B0'},{name:'芥末黃',hex:'#C0980C'},{name:'深炭',hex:'#2A2A2A'}]},
+    {group:'磚紅湖綠',colors:[{name:'磚紅',hex:'#B83020'},{name:'湖綠',hex:'#208080'},{name:'奶白',hex:'#F5EEE0'}]}
+  ]},
+  {section:'棉花糖系',groups:[
+    {group:'四件組',colors:[{name:'粉藍',hex:'#90C8F0'},{name:'奶黃',hex:'#F0E098'},{name:'蜜粉',hex:'#F0A8B8'},{name:'蘋果綠',hex:'#A8E0A8'}]},
+    {group:'馬卡龍',colors:[{name:'玫瑰粉',hex:'#F090A0'},{name:'薰衣草',hex:'#C0A0D8'},{name:'粉藍',hex:'#90C0E8'},{name:'蜜桃',hex:'#F8B8A0'}]},
+    {group:'奶油甜點',colors:[{name:'奶油白',hex:'#F8F0E0'},{name:'蜜粉',hex:'#F8C0C0'},{name:'粉玫瑰',hex:'#F0A8B0'},{name:'薄荷藍',hex:'#A8E0D8'}]}
+  ]},
+  {section:'故宮系',groups:[
+    {group:'紫禁城三色',colors:[{name:'宮牆紅',hex:'#C02020'},{name:'硃砂紅',hex:'#D04030'},{name:'琉璃黃',hex:'#D4940C'},{name:'蒼松綠',hex:'#1E5030'}]},
+    {group:'唐三彩',colors:[{name:'唐綠',hex:'#288040'},{name:'唐金',hex:'#C09020'},{name:'唐棕',hex:'#8C4820'},{name:'象牙',hex:'#F0E0C0'}]},
+    {group:'清宮御用',colors:[{name:'寶藍',hex:'#1A3870'},{name:'宮紅',hex:'#C02828'},{name:'明黃',hex:'#D4980C'},{name:'石墨',hex:'#606060'}]},
+    {group:'瓷器釉色',colors:[{name:'天青',hex:'#7AACC8'},{name:'白瓷',hex:'#F5F0E8'},{name:'鈞紅',hex:'#C84030'}]}
+  ]},
+  {section:'延禧系',groups:[
+    {group:'富察皇后',colors:[{name:'霧霾藍',hex:'#8898A8'},{name:'灰綠',hex:'#8AA890'},{name:'素麻',hex:'#D4C8A8'}]},
+    {group:'璵珞',colors:[{name:'墨綠',hex:'#304840'},{name:'鐵灰',hex:'#808890'},{name:'駝棕',hex:'#A08060'},{name:'暗紅',hex:'#7A2828'}]},
+    {group:'嫻妃',colors:[{name:'粉紫',hex:'#C098B8'},{name:'藕粉',hex:'#D8A8B0'},{name:'深紫',hex:'#604870'}]},
+    {group:'高貴妃',colors:[{name:'正紅',hex:'#C82020'},{name:'金黃',hex:'#D4A010'},{name:'深紫棕',hex:'#601830'}]}
+  ]},
+  {section:'莫蘭迪系',groups:[
+    {group:'粉系',colors:[{name:'莫粉',hex:'#E8A8A0'},{name:'玫霧',hex:'#D89898'},{name:'駝粉',hex:'#C8A888'},{name:'奶霧',hex:'#E8D8C8'}]},
+    {group:'藍系',colors:[{name:'霧藍',hex:'#90A8C0'},{name:'鐵藍',hex:'#708098'},{name:'淡霧藍',hex:'#B0C8D8'},{name:'灰青',hex:'#789098'}]},
+    {group:'綠系',colors:[{name:'苔綠',hex:'#90A878'},{name:'深苔',hex:'#708060'},{name:'嫩苔',hex:'#B0C898'},{name:'灰橄欖',hex:'#889878'}]},
+    {group:'萬用四色',colors:[{name:'莫灰棕',hex:'#A89888'},{name:'霧藍灰',hex:'#90A8B8'},{name:'霧粉',hex:'#E0B0B8'},{name:'奶白',hex:'#F0E8E0'}]}
+  ]}
+];
+
+// 搭配規則（依色票主題）
+const PAIR_MAP={
+  '天空藍':['深海藍','純白','奶油','珊瑚粉'],'海洋藍':['奶油','米白','珊瑚粉','薄荷'],'深海藍':['純白','奶油黃','珊瑚紅','天空藍'],
+  '奶油':['磚紅','深棕','森林綠','海洋藍'],'珊瑚粉':['深海藍','深森綠','奶油'],'磚紅':['奶油','薄荷','深海藍','深苔'],
+  '森林綠':['奶油','磚紅','金橘'],'深森綠':['奶油黃','珊瑚粉','奶白'],
+  '鮮紅':['墨黑','純白','深藍'],'活力綠':['白','橘色','墨黑'],'深藍':['橘色','金橘','純白'],
+  '深紫':['亮黃','純白','墨黑'],'亮紫':['亮黃','純白'],'電紫':['電黃','純白','墨黑'],
+  'Tiffany藍':['純白','墨黑'],'愛馬仕橘':['深棕','奶白'],'正黑':['純白','金駝','卡地亞紅'],
+  '金棕':['奶白','深咖'],'卡地亞紅':['古金','正黑'],
+  '宮牆紅':['蒼松綠','琉璃黃','象牙'],'唐綠':['唐金','象牙'],'寶藍':['明黃','宮紅'],
+  '霧霾藍':['素麻','灰綠'],'墨綠':['駝棕','素麻'],'粉紫':['深紫','藕粉'],
+  '莫粉':['霧藍灰','奶白'],'霧藍':['莫粉','莫灰棕','奶白'],'苔綠':['莫粉','奶白','莫灰棕'],
+  '糖粉':['天空藍','萊姆綠','橘糖'],'霓虹粉':['電紫','電藍'],'熱帶綠':['陽光黃','海洋青'],
+  '寶藍':['鵝黃','奶白'],'翡翠綠':['珊瑚紅','米白'],'磚紅':['湖綠','奶白'],
+  '玫瑰粉':['薰衣草','粉藍'],'奶油白':['蜜粉','薄荷藍']
+};
+
+const hexOf=name=>{
+  for(const s of PALETTE_DATA)for(const g of s.groups)for(const c of g.colors)if(c.name===name)return c.hex;
+  return'#888888';
+};
+
+let clothes=JSON.parse(localStorage.getItem('wrd4')||'[]');
+let logs=JSON.parse(localStorage.getItem('wlg4')||'[]');
+let curFilter='all',curStyle='日常',curWeather='晴天';
+let curDetailId=null,selColor='',selColorHex='',lastOOTD=null,lastCaption='',pendingPhoto='';
+
+function save(){localStorage.setItem('wrd4',JSON.stringify(clothes));localStorage.setItem('wlg4',JSON.stringify(logs));}
+
+function switchTab(id,el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('sec-'+id).classList.add('active');
+  const T={wardrobe:'我的衣櫥',ootd:'今日穿搭',palette:'顏色色票',stats:'記錄統計'};
+  document.getElementById('page-title').textContent=T[id];
+  document.getElementById('fab-add').style.display=id==='wardrobe'?'flex':'none';
+  if(id==='stats')renderStats();
+  if(id==='palette')renderPalettePage();
+}
+
+function filterCat(cat,el){
+  curFilter=cat;
+  document.querySelectorAll('#cat-filter .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');renderGrid();
+}
+function setStyle(s,el){curStyle=s;document.querySelectorAll('#style-filter .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+function setWeather(w,el){curWeather=w;document.querySelectorAll('#weather-filter .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+
+function renderGrid(){
+  const grid=document.getElementById('cloth-grid');
+  const list=curFilter==='all'?clothes:clothes.filter(c=>c.cat===curFilter);
+  if(!list.length){grid.innerHTML='<div style="grid-column:1/-1" class="empty">'+(clothes.length?'沒有符合的衣物':'還沒有衣物，點右上角 + 新增！')+'</div>';return;}
+  grid.innerHTML=list.map(c=>`
+    <div class="cloth-card" onclick="openDetail('${c.id}')">
+      <div class="cloth-photo">
+        ${c.photo?`<img src="${c.photo}" alt="${c.name}" loading="lazy">`:`<span>${EMOJI[c.cat]||'👚'}</span>`}
+        ${c.wornCount?`<div class="worn-badge">${c.wornCount}次</div>`:''}
+      </div>
+      <div class="cloth-name">${c.name}</div>
+      <div class="cloth-sub">
+        ${c.colorHex?`<span class="swatch-dot" style="background:${c.colorHex}"></span><span>${c.color}</span>`:'-'}
+      </div>
+    </div>`).join('');
+}
+
+function buildPaletteHTML(onClickFn){
+  return PALETTE_DATA.map(s=>`
+    <div class="palette-section-title">${s.section}</div>
+    ${s.groups.map(g=>`
+      <div style="margin-bottom:12px">
+        <div class="palette-group-title">${g.group}</div>
+        <div class="color-grid">
+          ${g.colors.map(c=>`
+            <div class="color-tile" onclick="${onClickFn}('${c.name}','${c.hex}',this)">
+              <div class="color-tile-box" style="background:${c.hex};${c.hex==='#FFFFFF'?'border:1px solid #ddd':''}"></div>
+              <div class="color-tile-name">${c.name}</div>
+            </div>`).join('')}
+        </div>
+      </div>`).join('')}`).join('');
+}
+
+function openAdd(){
+  selColor='';selColorHex='';pendingPhoto='';
+  document.getElementById('selected-color-name').textContent='';
+  document.getElementById('photo-preview').innerHTML=`<i class="ti ti-camera" style="font-size:30px"></i><span>點擊上傳或拍照</span><input type="file" accept="image/*" capture="environment" onchange="previewPhoto(event)">`;
+  ['f-name','f-brand','f-note'].forEach(id=>document.getElementById(id).value='');
+  ['f-cat','f-style','f-season'].forEach(id=>document.getElementById(id).selectedIndex=0);
+  document.getElementById('add-palette-wrap').innerHTML=buildPaletteHTML('selectColor');
+  document.getElementById('modal-add').classList.add('show');
+}
+
+function previewPhoto(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    pendingPhoto=ev.target.result;
+    document.getElementById('photo-preview').innerHTML=`<img src="${ev.target.result}" alt="預覽"><input type="file" accept="image/*" capture="environment" onchange="previewPhoto(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectColor(name,hex,el){
+  selColor=name;selColorHex=hex;
+  document.querySelectorAll('#add-palette-wrap .color-tile-box').forEach(s=>s.style.outline='none');
+  el.querySelector('.color-tile-box').style.outline='3px solid var(--purple)';
+  el.querySelector('.color-tile-box').style.outlineOffset='2px';
+  document.getElementById('selected-color-name').textContent='已選：'+name;
+}
+
+function addCloth(){
+  const name=document.getElementById('f-name').value.trim();
+  const cat=document.getElementById('f-cat').value;
+  if(!name){alert('請填寫衣物名稱！');return;}
+  if(!cat){alert('請選擇類別！');return;}
+  const cloth={id:Date.now().toString(),name,cat,
+    color:selColor,colorHex:selColorHex,
+    style:document.getElementById('f-style').value,
+    season:document.getElementById('f-season').value,
+    brand:document.getElementById('f-brand').value,
+    note:document.getElementById('f-note').value,
+    photo:pendingPhoto,wornCount:0,
+    addedAt:new Date().toLocaleDateString('zh-TW')};
+  clothes.push(cloth);save();closeModal('modal-add');renderGrid();
+}
+
+function openDetail(id){
+  const c=clothes.find(x=>x.id===id);if(!c)return;
+  curDetailId=id;
+  document.getElementById('detail-body').innerHTML=`
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
+      <div style="width:80px;height:80px;border-radius:12px;background:var(--bg2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+        ${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover" alt="${c.name}">`:`<span style="font-size:40px">${EMOJI[c.cat]||'👚'}</span>`}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:17px;font-weight:600;margin-bottom:8px;word-break:break-all">${c.name}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          <span class="badge bb">${c.cat}</span>
+          ${c.style?`<span class="badge bp">${c.style}</span>`:''}
+          ${c.season?`<span class="badge bt">${c.season}季</span>`:''}
+          ${c.colorHex?`<span class="badge bg2"><span class="swatch-dot" style="background:${c.colorHex}"></span>${c.color}</span>`:''}
+        </div>
+        ${c.brand?`<div style="font-size:12px;color:var(--text2);margin-top:7px">${c.brand}</div>`:''}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;background:var(--bg2);border-radius:var(--radius-sm);margin-bottom:${c.note?'10px':'0'}">
+      <div style="text-align:center"><div style="font-size:20px;font-weight:600">${c.wornCount}</div><div style="font-size:10px;color:var(--text2);margin-top:2px">穿著次數</div></div>
+      <div style="text-align:center"><div style="font-size:12px;font-weight:500">${c.lastWorn||'—'}</div><div style="font-size:10px;color:var(--text2);margin-top:2px">上次穿著</div></div>
+      <div style="text-align:center"><div style="font-size:12px;font-weight:500">${c.addedAt}</div><div style="font-size:10px;color:var(--text2);margin-top:2px">加入日期</div></div>
+    </div>
+    ${c.note?`<div style="font-size:13px;color:var(--text2);padding:10px;background:var(--bg2);border-radius:var(--radius-sm);margin-top:10px">${c.note}</div>`:''}`;
+  document.getElementById('modal-detail').classList.add('show');
+}
+
+function wearToday(){
+  const c=clothes.find(x=>x.id===curDetailId);if(!c)return;
+  c.wornCount=(c.wornCount||0)+1;c.lastWorn=new Date().toLocaleDateString('zh-TW');
+  logs.unshift({date:c.lastWorn,items:[{name:c.name,emoji:EMOJI[c.cat]||'👚',color:c.color,hex:c.colorHex}],type:'單件'});
+  save();renderGrid();closeModal('modal-detail');
+  setTimeout(()=>alert('✅ 已記錄「'+c.name+'」今天穿了！'),200);
+}
+function goOOTD(){
+  closeModal('modal-detail');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item')[1].classList.add('active');
+  document.getElementById('sec-ootd').classList.add('active');
+  document.getElementById('page-title').textContent='今日穿搭';
+  document.getElementById('fab-add').style.display='none';
+}
+function deleteCloth(){
+  if(!confirm('確定要刪除這件衣物嗎？'))return;
+  clothes=clothes.filter(x=>x.id!==curDetailId);
+  save();renderGrid();closeModal('modal-detail');
+}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+function genOOTD(){
+  if(!clothes.length){alert('請先新增衣物！');return;}
+  const catMap={日常:['上衣','下著','鞋子'],正式:['上衣','外套','下著','鞋子'],
+    休閒:['上衣','下著','鞋子'],約會:['上衣','裙子','鞋子','配件'],運動:['上衣','下著','鞋子']};
+  const cats=catMap[curStyle]||['上衣','下著','鞋子'];
+  const picked=[];
+  cats.forEach(cat=>{
+    const pool=clothes.filter(c=>c.cat===cat);
+    if(pool.length)picked.push(pool[Math.floor(Math.random()*pool.length)]);
+  });
+  if(!picked.length){alert('衣物類別不足，多新增幾件再試！');return;}
+  lastOOTD=picked;
+
+  document.getElementById('ootd-slots').innerHTML=picked.map(c=>`
+    <div class="ootd-slot">
+      <div style="width:56px;height:56px;border-radius:10px;margin:0 auto 5px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden">
+        ${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover" alt="${c.name}">`:`<span style="font-size:32px">${EMOJI[c.cat]||'👚'}</span>`}
+      </div>
+      <div style="font-size:10px;color:var(--text2)">${c.cat}</div>
+      <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div>
+    </div>`).join('');
+
+  const ST={日常:'輕鬆舒適，適合日常外出',正式:'俐落有型，適合商務場合',
+    休閒:'自在隨性，適合朋友聚會',約會:'甜美精緻，讓人印象深刻',運動:'機能活力，方便活動'};
+  const WT={下雨:'☔ 記得帶傘，建議深色防潑水材質',炎熱:'🌡️ 透氣材質優先，淺色系更涼爽',
+    涼爽:'🍃 可嘗試薄外套疊穿',晴天:'',陰天:''};
+  document.getElementById('ootd-tip').innerHTML=`✨ ${ST[curStyle]}${WT[curWeather]?'　'+WT[curWeather]:''}`;
+
+  const colors=picked.filter(c=>c.color&&c.colorHex);
+  let cHTML='';
+  if(colors.length){
+    cHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      ${colors.map(c=>`<div style="display:flex;align-items:center;gap:5px">
+        <span style="width:20px;height:20px;border-radius:6px;background:${c.colorHex};display:block;border:0.5px solid rgba(0,0,0,.12)"></span>
+        <span style="font-size:12px">${c.color}</span>
+      </div>`).join('')}
+    </div>`;
+    const mainColor=colors[0].color;
+    const pairs=(PAIR_MAP[mainColor]||[]).slice(0,4);
+    if(pairs.length){
+      cHTML+=`<div style="font-size:12px;color:var(--text2);margin-bottom:8px">以「${mainColor}」為主色，推薦搭配：</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        ${pairs.map(p=>{const h=hexOf(p);return`<div style="display:flex;align-items:center;gap:4px;padding:5px 10px;background:var(--bg2);border-radius:var(--radius-pill)">
+          <span style="width:12px;height:12px;border-radius:4px;background:${h};display:block;border:0.5px solid rgba(0,0,0,.1)"></span>
+          <span style="font-size:12px">${p}</span>
+        </div>`}).join('')}
+      </div>`;
+    }
+  } else {
+    cHTML='<div style="font-size:13px;color:var(--text2)">新增衣物時選擇色票顏色，就能獲得配色建議 🎨</div>';
+  }
+  document.getElementById('color-analysis').innerHTML=cHTML;
+
+  const items=picked.map(c=>c.name).join(' + ');
+  const caption=`今日穿搭 ✨\n\n${items}\n\n風格：${curStyle}\n天氣：${curWeather}\n\n穿搭是表達自己的方式 💕`;
+  const tags=`#OOTD #穿搭日記 #今日穿搭 #${curStyle}風 #衣櫥分享 #穿搭記錄 #台灣穿搭 #自媒體穿搭 #ootd台灣 #穿搭推薦`;
+  lastCaption=caption+'\n\n'+tags;
+  document.getElementById('ig-caption').textContent=caption;
+  document.getElementById('ig-tags').textContent=tags;
+  document.getElementById('ootd-result').style.display='block';
+  setTimeout(()=>document.getElementById('ootd-result').scrollIntoView({behavior:'smooth'}),100);
+}
+
+function copyCaption(){
+  if(!lastCaption)return;
+  const fallback=()=>{
+    const t=document.createElement('textarea');t.value=lastCaption;
+    t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);
+    t.select();document.execCommand('copy');document.body.removeChild(t);
+    alert('✅ 文案已複製！去 IG 貼上發文吧 🎉');
+  };
+  navigator.clipboard?navigator.clipboard.writeText(lastCaption).then(()=>alert('✅ 文案已複製！去 IG 貼上發文吧 🎉')).catch(fallback):fallback();
+}
+function openIG(){window.open('https://www.instagram.com/','_blank');}
+function openIGStory(){
+  const isMobile=/iphone|ipad|ipod|android/i.test(navigator.userAgent);
+  if(isMobile){
+    window.location.href='instagram://story-camera';
+    setTimeout(()=>window.open('https://www.instagram.com/','_blank'),1500);
+  } else {
+    window.open('https://www.instagram.com/','_blank');
+  }
+}
+
+function saveOOTD(){
+  if(!lastOOTD||!lastOOTD.length)return;
+  lastOOTD.forEach(c=>{c.wornCount=(c.wornCount||0)+1;c.lastWorn=new Date().toLocaleDateString('zh-TW');});
+  logs.unshift({date:new Date().toLocaleDateString('zh-TW'),style:curStyle,weather:curWeather,
+    items:lastOOTD.map(c=>({name:c.name,emoji:EMOJI[c.cat]||'👚',color:c.color,hex:c.colorHex})),type:'OOTD'});
+  save();alert('✅ 今日穿搭記錄已儲存！');
+}
+
+function renderPalettePage(){
+  document.getElementById('palette-main').innerHTML=
+    `<div class="card" style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">你的完整色票</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px">點任一顏色查看搭配建議與你的衣物</div>
+      ${buildPaletteHTML('showPair')}
+    </div>`;
+}
+
+function showPair(name,hex,el){
+  const pairs=(PAIR_MAP[name]||[]).slice(0,5);
+  const myItems=clothes.filter(c=>c.color===name);
+  document.getElementById('pair-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="width:44px;height:44px;border-radius:11px;background:${hex};border:0.5px solid rgba(0,0,0,.12)"></div>
+      <span style="font-size:16px;font-weight:600">${name}</span>
+    </div>
+    ${pairs.length?`
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">適合搭配：</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px">
+      ${pairs.map(p=>{const h=hexOf(p);return`<div onclick="showPair('${p}','${h}',null)" style="display:flex;align-items:center;gap:5px;padding:6px 11px;border:0.5px solid var(--border);border-radius:var(--radius-pill);cursor:pointer">
+        <span style="width:14px;height:14px;border-radius:4px;background:${h};display:block;border:0.5px solid rgba(0,0,0,.1)"></span>
+        <span style="font-size:12px">${p}</span>
+      </div>`}).join('')}
+    </div>`:''}
+    ${myItems.length?`
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">你的「${name}」衣物（${myItems.length}件）：</div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      ${myItems.map(c=>`<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg2);border-radius:var(--radius-sm)">
+        ${c.photo?`<img src="${c.photo}" style="width:32px;height:32px;border-radius:7px;object-fit:cover" alt="${c.name}">`:`<span style="font-size:22px">${EMOJI[c.cat]||'👚'}</span>`}
+        <span style="font-size:13px;font-weight:500;flex:1">${c.name}</span>
+        <span class="badge bg2">${c.cat}</span>
+      </div>`).join('')}
+    </div>`:`<div style="font-size:13px;color:var(--text2)">還沒有登錄「${name}」的衣物</div>`}`;
+  const pr=document.getElementById('pair-result');
+  pr.style.display='block';
+  setTimeout(()=>pr.scrollIntoView({behavior:'smooth'}),100);
+}
+
+function renderStats(){
+  const t=clothes.length;
+  const worn=clothes.filter(c=>c.wornCount>0).length;
+  const sorted=[...clothes].sort((a,b)=>b.wornCount-a.wornCount);
+  const fav=sorted[0];
+  document.getElementById('st-total').textContent=t;
+  document.getElementById('st-logs').textContent=logs.length;
+  document.getElementById('st-unworn').textContent=t-worn;
+  document.getElementById('st-fav').textContent=fav&&fav.wornCount>0?(EMOJI[fav.cat]||'👚'):'—';
+  const cats={};clothes.forEach(c=>{cats[c.cat]=(cats[c.cat]||0)+1;});
+  const maxC=Math.max(...Object.values(cats),1);
+  document.getElementById('cat-bars').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-label">${EMOJI[k]||''} ${k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxC*100)}%"></div></div>
+      <div class="bar-count">${v}</div>
+    </div>`).join('')||'<div class="empty" style="padding:1rem 0">尚無資料</div>';
+  const ll=document.getElementById('log-list');
+  ll.innerHTML=logs.length?logs.slice(0,20).map(l=>`
+    <div class="log-row">
+      <div style="font-size:22px;flex-shrink:0">${l.items.map(i=>i.emoji).join('')}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">${l.date}</div>
+        <div style="font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.items.map(i=>i.name).join(' · ')}</div>
+      </div>
+      ${l.style?`<span class="badge bp">${l.style}</span>`:''}
+    </div>`).join(''):'<div class="empty">還沒有記錄</div>';
+}
+
+renderGrid();
+document.querySelectorAll('.modal-wrap').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show');});
+});
+</script>
+</body>
+</html>
